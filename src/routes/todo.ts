@@ -6,9 +6,6 @@ const router = Router();
 
 const Todos: Todo[] = [];
 
-type Requestbody = {  id : string,
-                      text: string };
-
 router.post('/todo', (req,res,next) => {
     const newTodo: Todo = {
 		id: new Date().toISOString(),
@@ -19,10 +16,14 @@ router.post('/todo', (req,res,next) => {
 })
 
 router.post('/delete', (req, res, next) => {
-    const body = req.body as Requestbody;
-    const elementid = body.id;
-    const index = Todos.findIndex(todoitem => todoitem.id === elementid);
-    if(index !== -1){
+    const elementid = req.body.id;
+    let index;
+    for(let i= 0; i< Todos.length; i++){
+        if(Todos[i].id === elementid){
+            index = i;
+        }
+    }
+    if(index !== undefined){
         Todos.splice(index, 1);
         res.status(200).json({ todos: Todos });
     } else {
@@ -31,15 +32,15 @@ router.post('/delete', (req, res, next) => {
 });
 
 router.post('/update', (req, res, next) => {
-    const body = req.body as Requestbody;
-    const elementid = body.id;
-    const todoindex = Todos.findIndex(todoitem => todoitem.id === elementid);
-    if(todoindex !== -1){
-        Todos[todoindex].text = body.text;
-        res.status(200).json({ todos: Todos });
-    } else {
-        res.status(404).json({ todos: Todos });
+    const elementid = req.body.id;
+    let index;
+    for(let i= 0; i< Todos.length; i++){
+        if(Todos[i].id === elementid){
+            Todos[i].text = req.body.text;
+            return res.status(200).json({ todos: Todos });
+        }
     }
+    res.status(404).json({ todos: Todos });
 });
 
 

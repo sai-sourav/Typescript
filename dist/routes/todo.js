@@ -13,14 +13,13 @@ router.post('/todo', (req, res, next) => {
 });
 router.post('/delete', (req, res, next) => {
     const elementid = req.body.id;
-    // let index;
-    // for(let i= 0; i< Todos.length; i++){
-    //     if(Todos[i].id === elementid){
-    //         index = i;
-    //     }
-    // }
-    const index = Todos.findIndex(todoitem => todoitem.id === elementid);
-    if (index !== -1) {
+    let index;
+    for (let i = 0; i < Todos.length; i++) {
+        if (Todos[i].id === elementid) {
+            index = i;
+        }
+    }
+    if (index !== undefined) {
         Todos.splice(index, 1);
         res.status(200).json({ todos: Todos });
     }
@@ -30,21 +29,14 @@ router.post('/delete', (req, res, next) => {
 });
 router.post('/update', (req, res, next) => {
     const elementid = req.body.id;
-    const todoindex = Todos.findIndex(todoitem => todoitem.id === elementid);
-    // let index;
-    // for(let i= 0; i< Todos.length; i++){
-    //     if(Todos[i].id === elementid){
-    //         Todos[i].text = req.body.text;
-    //         return res.status(200).json({ todos: Todos });
-    //     }
-    // }
-    if (todoindex !== -1) {
-        Todos[todoindex].text = req.body.text;
-        res.status(200).json({ todos: Todos });
+    let index;
+    for (let i = 0; i < Todos.length; i++) {
+        if (Todos[i].id === elementid) {
+            Todos[i].text = req.body.text;
+            return res.status(200).json({ todos: Todos });
+        }
     }
-    else {
-        res.status(404).json({ todos: Todos });
-    }
+    res.status(404).json({ todos: Todos });
 });
 router.get('/', (req, res, next) => {
     res.status(200).json({ todos: Todos });
